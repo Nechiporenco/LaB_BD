@@ -1,0 +1,73 @@
+DROP DATABASE IF EXISTS my_database; 
+
+  
+
+CREATE DATABASE IF NOT EXISTS my_database; 
+
+  
+
+USE my_database; 
+
+  
+
+CREATE TABLE IF NOT EXISTS books ( 
+
+    Код INT NOT NULL PRIMARY KEY, 
+
+    Новинка ENUM('Yes', 'No') NOT NULL, 
+
+    Назва VARCHAR(255) NOT NULL, 
+
+    Видавництво VARCHAR(255) NOT NULL, 
+
+    Сторінки INT NOT NULL, 
+
+    Формат VARCHAR(50) NOT NULL, 
+
+    Тираж INT NOT NULL, 
+
+    Тема VARCHAR(255), 
+
+    Категорія VARCHAR(255), 
+
+    Дата DATE DEFAULT CURRENT_DATE, 
+
+    INDEX idx_Код (Код), 
+
+    INDEX idx_Назва (Назва), 
+
+    INDEX idx_Дата (Дата), 
+
+    INDEX idx_Тема (Тема), 
+
+    INDEX idx_Категорія (Категорія) 
+
+); 
+
+  
+
+INSERT INTO books (Код, Новинка, Назва, Видавництво, Сторінки, Формат, Тираж, Тема, Категорія) 
+
+ALUES (2, 'No', 'Апаратні засоби мультимедія', 'Видавнича группа ВНВ', 400, '70х100/16', 5000, 'Використання ПК', 'Підручники'); 
+
+  
+
+ALTER TABLE books ADD COLUMN Автор VARCHAR(15); 
+
+  
+
+ALTER TABLE books MODIFY COLUMN Автор VARCHAR(20); 
+
+  
+
+ALTER TABLE books DROP COLUMN Автор; 
+
+  
+
+ALTER TABLE books DROP INDEX idx_Код; 
+
+ALTER TABLE books ADD UNIQUE INDEX idx_Код (Код); 
+
+  
+
+ALTER TABLE books DROP INDEX idx_Код; 
