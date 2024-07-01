@@ -1,0 +1,15 @@
+CREATE TABLE Книги (
+    Код INT PRIMARY KEY,
+    Новинка ENUM('Yes', 'No') NOT NULL,
+    Назва VARCHAR(255) NOT NULL,
+    Видавництво VARCHAR(255) NOT NULL,
+    Сторінки INT NOT NULL,
+    Формат VARCHAR(50) NOT NULL,
+    Тираж INT NOT NULL,
+    Дата DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE Теми (
+    Код INT PRIMARY KEY,
+    Тема VARCHAR(255)
+);
