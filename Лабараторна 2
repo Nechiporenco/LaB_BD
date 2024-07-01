@@ -1,0 +1,31 @@
+SELECT номер, код, новинка, назва, ціна, сторінки FROM books;
+
+SELECT * FROM books;
+
+SELECT код, назва, новинка, сторінки, ціна, номер FROM books;
+
+SELECT * FROM books LIMIT 10;
+
+SELECT * FROM books LIMIT (SELECT COUNT(*) * 0.1 FROM books);
+
+SELECT DISTINCT код FROM books;
+
+SELECT * FROM books WHERE новинка = TRUE;
+
+SELECT * FROM books WHERE новинка = TRUE AND ціна BETWEEN 20 AND 30;
+
+SELECT * FROM books WHERE новинка = TRUE AND (ціна < 20 OR ціна > 30);
+
+SELECT * FROM books WHERE сторінки BETWEEN 300 AND 400 AND ціна BETWEEN 20 AND 30;
+
+SELECT * FROM books WHERE видання LIKE '%зима 2000%';
+
+SELECT * FROM books WHERE код IN (5110, 5141, 4985, 4241);
+
+SELECT * FROM books WHERE видання LIKE '%1999%' OR видання LIKE '%2001%' OR видання LIKE '%2003%' OR видання LIKE '%2005%';
+
+SELECT * FROM books WHERE назва COLLATE NOCASE BETWEEN 'А' AND 'К';
+
+SELECT * FROM books WHERE назва LIKE 'АПП%' AND видання LIKE '%2000%' AND ціна < 20;
+
+SELECT * FROM books WHERE назва LIKE 'АПП%' AND назва LIKE '%е' AND видання LIKE '%2000%';
