@@ -1,0 +1,41 @@
+CREATE FUNCTION total_book_value(year INT) RETURNS REAL
+BEGIN
+    DECLARE total_value REAL;
+    SELECT SUM(Ціна) INTO total_value FROM books WHERE strftime('%Y', Дата) = year;
+    RETURN total_value;
+END;
+
+CREATE FUNCTION books_published_in_year(year INT) RETURNS TABLE (
+    Код INT,
+    Назва TEXT,
+    Видавництво TEXT
+)
+BEGIN
+    RETURN QUERY SELECT Код, Назва, Видавництво FROM books WHERE strftime('%Y', Дата) = year;
+END;
+
+CREATE FUNCTION extract_publishers_list(publishers_str TEXT) RETURNS TEXT
+BEGIN
+    DECLARE result TEXT;
+    DECLARE i INT DEFAULT 1;
+    DECLARE publisher TEXT;
+    SET result = '';
+    WHILE i <= LENGTH(publishers_str) DO
+        SET publisher = SUBSTR(publishers_str, i, INSTR(publishers_str, ';', i) - i);
+        SET result = result || i || '. ' || publisher || '\n';
+        SET i = INSTR(publishers_str, ';', i) + 1;
+    END WHILE;
+    RETURN result;
+END;
+
+DECLARE cur CURSOR FOR SELECT Код, Назва FROM books WHERE strftime('%Y', Дата) = 2024;
+OPEN cur;
+FETCH cur INTO @Код, @Назва;
+WHILE NOT EOF(cur) DO
+    -- Ваш код обробки даних
+    PRINT @Код, @Назва;
+    FETCH cur INTO @Код, @Назва;
+END WHILE;
+CLOSE cur;
+
+DEALLOCATE cur;
