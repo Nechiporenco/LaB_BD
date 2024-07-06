@@ -1,0 +1,8 @@
+CREATE TABLE student_grades (
+    student_id INTEGER PRIMARY KEY,
+    grade INTEGER
+);
+INSERT INTO student_grades (grade) VALUES (3);
+INSERT INTO student_grades (grade) VALUES (COALESCE((SELECT grade FROM default_values), 0));
+PRAGMA table_info(student_grades);
+DROP TABLE student_grades;
