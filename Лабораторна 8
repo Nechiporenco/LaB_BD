@@ -1,0 +1,81 @@
+CREATE TRIGGER topic_count_limit
+BEFORE INSERT ON books
+WHEN NEW.Тема IS NOT NULL
+BEGIN
+    SELECT CASE
+        WHEN (SELECT COUNT(*) FROM books WHERE Тема IS NOT NULL) >= 5 AND (SELECT COUNT(*) FROM books WHERE Тема IS NOT NULL) <= 10
+        THEN RAISE(ABORT, 'Кількість тем не відповідає допустимому діапазону (5-10)')
+    END;
+END;
+
+CREATE TRIGGER new_book_year_limit
+BEFORE INSERT ON books
+WHEN NEW.Новинка = 'Yes'
+BEGIN
+    SELECT CASE
+        WHEN strftime('%Y', 'now') != strftime('%Y', NEW.Дата)
+        THEN RAISE(ABORT, 'Новинкою може бути тільки книга видана в поточному році')
+    END;
+END;
+
+CREATE TRIGGER price_limit
+BEFORE INSERT ON books
+WHEN NEW.Ціна IS NULL
+BEGIN
+    SELECT CASE
+        WHEN NEW.Сторінки <= 100 THEN NEW.Ціна = 10
+        WHEN NEW.Сторінки <= 200 THEN NEW.Ціна = 20
+        WHEN NEW.Сторінки <= 300 THEN NEW.Ціна = 30
+    END;
+END;
+
+CREATE TRIGGER publisher_copies_limit
+BEFORE INSERT ON books
+BEGIN
+    SELECT CASE
+        WHEN NEW.Видавництво = 'BHV' AND NEW.Тираж < 5000 THEN RAISE(ABORT, 'Видавництво BHV не випускає книги накладом меншим 5000')
+        WHEN NEW.Видавництво = 'Diasoft' AND NEW.Тираж < 10000 THEN RAISE(ABORT, 'Видавництво Diasoft не випускає книги накладом меншим 10000')
+    END;
+END;
+
+CREATE TRIGGER prevent_delete
+BEFORE DELETE ON books
+BEGIN
+    SELECT CASE
+        WHEN NEW.Користувач != 'dbo' THEN RAISE(ABORT, 'Видалення заборонено для користувачів, крім dbo')
+    END;
+END;
+
+CREATE TRIGGER prevent_price_change
+BEFORE UPDATE OF Ціна ON books
+BEGIN
+    SELECT CASE
+        WHEN NEW.Користувач = 'dbo' THEN RAISE(ABORT, 'Користувач dbo не має права змінювати ціну книги')
+    END;
+END;
+
+CREATE TRIGGER publisher_restrictions
+BEFORE INSERT ON books
+BEGIN
+    SELECT CASE
+        WHEN NEW.Видавництво IN ('ДМК', 'Еком') THEN RAISE(ABORT, 'Видавництва ДМК і Еком підручники не видають')
+    END;
+END;
+
+CREATE TRIGGER monthly_new_books_limit
+BEFORE INSERT ON books
+BEGIN
+    SELECT CASE
+        WHEN (SELECT COUNT(*) FROM books WHERE strftime('%Y-%m', Дата) = strftime('%Y-%m', 'now')) >= 10
+        THEN RAISE(ABORT, 'Видавництво не може випустити більше 10 новинок протягом одного місяця')
+    END;
+END;
+
+CREATE TRIGGER book_format_limit
+BEFORE INSERT ON books
+BEGIN
+    SELECT CASE
+        WHEN NEW.Формат = '60х88/16' AND NEW.Видавництво = 'BHV'
+        THEN RAISE(ABORT, 'Видавництво BHV не випускає книги формату 60х88/16')
+    END;
+END;
